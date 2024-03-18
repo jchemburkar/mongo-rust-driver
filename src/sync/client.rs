@@ -210,6 +210,8 @@ impl Client {
     /// # }
     /// ```
     pub fn shutdown_immediate(self) {
-        runtime::block_on(self.async_client.shutdown_immediate());
+        runtime::spawn_blocking(|| {
+            self.async_client.shutdown_immediate()
+        });
     }
 }
