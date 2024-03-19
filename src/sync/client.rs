@@ -189,7 +189,7 @@ impl Client {
     /// Handles to server-side resources are `Cursor`, `SessionCursor`, `Session`, or
     /// `GridFsUploadStream`.
     pub fn shutdown(self) {
-        runtime::block_on(self.async_client.shutdown());
+        runtime::spawn_blocking(||self.async_client.shutdown());
     }
 
     /// Shut down this `Client`, terminating background thread workers and closing connections.
