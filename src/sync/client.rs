@@ -8,6 +8,7 @@ use crate::{
     runtime,
     Client as AsyncClient,
 };
+use tokio::task::spawn_blocking;
 
 /// This is the main entry point for the synchronous API. A `Client` is used to connect to a MongoDB
 /// cluster. By default, it will monitor the topology of the cluster, keeping track of any changes,
@@ -189,7 +190,7 @@ impl Client {
     /// Handles to server-side resources are `Cursor`, `SessionCursor`, `Session`, or
     /// `GridFsUploadStream`.
     pub fn shutdown(self) {
-        runtime::spawn_blocking(||self.async_client.shutdown());
+        tokio::task::spawn_blocking(||self.async_client.shutdown());
     }
 
     /// Shut down this `Client`, terminating background thread workers and closing connections.
@@ -210,8 +211,6 @@ impl Client {
     /// # }
     /// ```
     pub fn shutdown_immediate(self) {
-        runtime::spawn_blocking(|| {
-            self.async_client.shutdown_immediate()
-        });
+        tokio::task::spawn_blocking(||self.async_client.shutdown_immediate());
     }
 }
